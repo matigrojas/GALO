@@ -39,8 +39,8 @@ class ffnnKFold():
         self.obj_directions = [-1,]
         self.obj_labels = ['f(x)']
 
-        self.lower_bound = [limits[0] for _ in range(self.number_of_variables)]
-        self.upper_bound = [limits[1] for _ in range(self.number_of_variables)]
+        self.lower_bound = np.array([limits[0] for _ in range(self.number_of_variables)])
+        self.upper_bound = np.array([limits[1] for _ in range(self.number_of_variables)])
 
     def create_solution(self) -> FloatSolution:
         new_solution = FloatSolution(

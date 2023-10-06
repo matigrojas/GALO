@@ -19,7 +19,7 @@ class GaloCrossoverConfigurable():
                  ratio_var: float = 0.5,
                  p_elite_start: float = 0.7,
                  p_elite_var: float = 0.3):
-        super(GaloCrossoverConfigurable,self).__init__(probability=probability)
+        self.probability=probability
         self.ratio_start = ratio_start
         self.ratio_var = ratio_var
         self.p_elite_start = p_elite_start

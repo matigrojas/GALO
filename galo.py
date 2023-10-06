@@ -1,6 +1,4 @@
-import numpy as np
 import time
-import math
 import copy
 import random
 
@@ -8,14 +6,13 @@ class GeneticAntLionOptimizer():
 
     def __init__(self,
                  problem,
-                 termination_criterion,
                  crossover,
                  mutation,
                  selection,
-                 population_size: int = 50,
-                 number_of_antlions:int = 50,
+                 max_evaluations: float = 10000,
+                 population_size: int = 30,
+                 number_of_antlions:int = 10,
                  ):
-        super(GeneticAntLionOptimizer,self).__init__()
 
         self.problem = problem
         self.population_size = population_size
@@ -24,14 +21,13 @@ class GeneticAntLionOptimizer():
         self.mutation_operator = mutation
         self.crossover_operator = crossover
         self.random_walk_selection_operator = selection
-
-        self.termination_criterion = termination_criterion
-
         self.antlions_population = []
         self.ants_population = []
+        
+        self.evaluations = 0
+        self.max_evaluations = max_evaluations
 
         self.elite_antlion = None
-        self.observable.register(termination_criterion)
 
     def run(self):
         """ Execute the algorithm. """
@@ -41,18 +37,19 @@ class GeneticAntLionOptimizer():
         self.antlions_population = self.evaluate(self.antlions_population)
         self.ants_population = self.evaluate(self.ants_population)
 
-        print(f"Progress: {self.evaluations}/{self.max_evaluations}, Fitness: {self.get_result().objectives[0]}")
         self.init_progress()
+        print(f"Progress: {self.evaluations}/{self.max_evaluations}, Fitness: {self.get_result().objectives[0]}")
 
-        while not self.stopping_condition_is_met():
+        while not self.termination_criterion_is_met():
             self.step()
-            self.update_progress()
+            print(f"Progress: {self.evaluations}/{self.max_evaluations}, Fitness: {self.get_result().objectives[0]}")
 
         self.total_computing_time = time.time() - self.start_computing_time
 
-    def evaluate(self, solution_list):
-        return self.evaluator.evaluate(solution_list,self.problem)
-
+    def evaluate(self, population):
+        population = [self.problem.evaluate(population[i]) for i in range(len(population))]
+        return population
+    
     def create_initial_solutions(self):
         self.antlions_population = [self.problem.create_solution() for _ in range(round(self.number_of_antlions))]
         self.ants_population = [self.problem.create_solution() for _ in range(round(self.population_size))]
@@ -65,10 +62,7 @@ class GeneticAntLionOptimizer():
 
     def init_progress(self) -> None:
         self.set_elite_antlion()
-        self.evaluations = self.population_size
-
-        observable_data = self.get_observable_data()
-        self.observable.notify_all(**observable_data)
+        self.evaluations = self.population_size+self.number_of_antlions
 
     def step(self):
         for i in range(len(self.ants_population)):
@@ -92,7 +86,7 @@ class GeneticAntLionOptimizer():
 
             self.ants_population[i] = self.mutation_operator.execute(self.ants_population[i])
 
-            self.ants_population[i] = self.evaluator.evaluate([self.ants_population[i]],self.problem)[0]
+            self.ants_population[i] = self.problem.evaluate(self.ants_population[i])
             self.update_progress()
 
             #Verify if the new ant is better than the selected antlion
@@ -105,14 +99,11 @@ class GeneticAntLionOptimizer():
     def update_progress(self) -> None:
         self.evaluations += 1
 
-        observable_data = self.get_observable_data()
-        self.observable.notify_all(**observable_data)
-
     def get_result(self):
         return self.elite_antlion
 
     def get_name(self) -> str:
-        return "Float Antlion Optimization"
+        return "Genetic Antlion Optimisation (GALO)"
 
-    def stopping_condition_is_met(self) -> bool:
-        return self.termination_criterion.is_met
+    def termination_criterion_is_met(self):
+        return self.evaluations >= self.max_evaluations
