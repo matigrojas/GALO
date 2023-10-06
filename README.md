@@ -1,3 +1,3 @@
-# Addressing Adverse Effects of Medical Data when Training Multi-Layer Perceptrons Through a New Micro-Genetic Algorithm Crossover Operator
+# A Genetic-Operators based Ant Lion Optimiser for Training a Medical Multilayer Perceptron
 
-This Github contains the files related to the article "Addressing Adverse Effects of Medical Data when Training Multi-Layer Perceptrons Through a New Micro-Genetic Algorithm Crossover Operator", sent to SN Computer sciences for evaluations.
+This Github contains the files related to the article "A Genetic-Operators based Ant Lion Optimiser for Training a Medical Multilayer Perceptron", sent to Applied Soft Computing Journal.
