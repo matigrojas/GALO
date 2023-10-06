@@ -46,3 +46,31 @@ class BinaryTournamentSelection():
                 result = 1
 
         return result
+    
+class RouletteWheelSelection():
+    """Performs roulette wheel selection.
+    """
+
+    def __init__(self):
+        super(RouletteWheelSelection).__init__()
+
+    def execute(self, front: []) -> []:
+        if front is None:
+            raise Exception('The front is null')
+        elif len(front) == 0:
+            raise Exception('The front is empty')
+
+        maximum = sum([solution.objectives[0] for solution in front])
+        rand = random.uniform(0.0, maximum)
+        value = 0.0
+
+        for solution in front:
+            value += solution.objectives[0]
+
+            if value > rand:
+                return solution
+
+        return None
+
+    def get_name(self) -> str:
+        return 'Roulette wheel selection'

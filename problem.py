@@ -72,24 +72,15 @@ class ffnnKFold():
 
 
     def evaluate(self, solution: FloatSolution) -> FloatSolution:
-        numInputs = np.shape(self.train_samples[0])[1]  # number of inputs
+        start = 0
 
-        # number of hidden neurons
-        HiddenNeurons = self.net.layers[0].np['b'][:].shape[0]
-
-        split1 = HiddenNeurons * numInputs
-        split2 = split1 + HiddenNeurons
-        split3 = split2 + HiddenNeurons
-
-        input_w = np.array(solution.variables[0:split1]).reshape(HiddenNeurons,numInputs)
-        layer_w = np.array(solution.variables[split1:split2]).reshape(1,HiddenNeurons)
-        input_bias = np.array(solution.variables[split2:split3]).reshape(1,HiddenNeurons)
-        bias_output = solution.variables[split3:split3+1]
-
-        self.net.layers[0].np['w'][:] = input_w
-        self.net.layers[1].np['w'][:] = layer_w
-        self.net.layers[0].np['b'][:] = input_bias
-        self.net.layers[1].np['b'][:] = bias_output
+        for prop in ('w','b'):
+            for l in self.net.layers:
+                size = l.np[prop].size
+                values = np.array(solution.variables[start: start + size])
+                values.shape = l.np[prop].shape
+                l.np[prop][:] = values
+                start += size
 
         score = 0.0
 
