@@ -9,27 +9,20 @@
 class FloatSolution():
     """ Class representing float solutions """
 
-    def __init__(self, lower_bound: [float], upper_bound: [float], number_of_objectives: int,
-                 number_of_constraints: int = 0):
+    def __init__(self, lower_bound: [float], upper_bound: [float]):
         self.lower_bound = lower_bound
         self.upper_bound = upper_bound
         self.number_of_variables = len(lower_bound)
-        self.number_of_objectives = number_of_objectives
-        self.number_of_constraints = number_of_constraints
         self.variables = [[] for _ in range(self.number_of_variables)]
-        self.objectives = [0.0 for _ in range(self.number_of_objectives)]
-        self.constraints = [0.0 for _ in range(self.number_of_constraints)]
+        self.objectives = [0.0]
         self.attributes = {}
 
     def __copy__(self):
         new_solution = FloatSolution(
             self.lower_bound,
-            self.upper_bound,
-            self.number_of_objectives,
-            self.number_of_constraints)
+            self.upper_bound,)
         new_solution.objectives = self.objectives[:]
         new_solution.variables = self.variables[:]
-        new_solution.constraints = self.constraints[:]
 
         new_solution.attributes = self.attributes.copy()
 
